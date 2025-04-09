@@ -4,6 +4,10 @@ from linked_list import MyList
 class MyTestCase(unittest.TestCase):
     def test_positive(self):
         A = MyList()
+        self.assertEqual(A.head, A.tail)
+        self.assertEqual(A.head.data, None)
+        self.assertEqual(A.head.prev, None)
+        self.assertEqual(A.head.next, None)
         A.append(3)
         self.assertEqual(len(A), 1)
         self.assertEqual(str(A), "[3]")
@@ -28,6 +32,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(A), 3)
         self.assertEqual(str(A), "[5, 3, 25]")
 
+        self.assertEqual(A.find(25).data, 25)
+        self.assertEqual(3 in A, True)
+        self.assertEqual(2351314 in A, False)
+
         B = MyList()
 
         for i in range(10):
@@ -40,6 +48,9 @@ class MyTestCase(unittest.TestCase):
         A.concat(B)
 
         self.assertEqual(len(A), 13)
+        A.remove(A.head.next)
+        self.assertEqual(A[0], 3)
+        self.assertEqual(len(A), 12)
 
     def test_corner_cases(self):
         A = MyList()
