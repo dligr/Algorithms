@@ -2,65 +2,13 @@ from collections import deque
 
 operations = ["+", "-", "*", "/", "**"]
 
-def findHeight(root):
-    if type(root) != list:
-        return 0
-    return 1 + max(findHeight(root[1]), findHeight(root[2]))
-
-def fillInMatrix(root, matrix, height, layer=0, horizontal=-1):
-    if horizontal == -1:
-        horizontal = 2 ** (height - layer - 1) - 1
-
-    coords = (layer * 3, horizontal)
-
-    matrix[coords[0]][coords[1]] = str(root[0])
-
-    if type(root) != list:
-        return coords
-
-    if root[1] == None and root[2] == None:
-        return coords
-
-    matrix[coords[0] + 1][coords[1]] = "|"
-
-    if root[1] != None:
-        a = fillInMatrix(root[1], matrix, height, layer + 1, horizontal - 2 ** (height - layer - 2))
-    else:
-        a = coords
-    if root[2] != None:
-        b = fillInMatrix(root[2], matrix, height, layer + 1, horizontal + 2 ** (height - layer - 2))
-    else:
-        b = coords
-
-    for i in range(a[1], b[1] + 1):
-        matrix[coords[0] + 2][i] = "-"
-
-    return coords
-
 def stringify(root):
-    h = findHeight(root)
+    if root == None:
+        return "()"
+    if type(root) != list:
+        return str(root)
 
-    matrix = [[" " for i in range(2 ** h - 1)] for i in range(3*h + 1)]
-
-    fillInMatrix(root, matrix, h)
-
-    for i in matrix:
-        for j in reversed(range(len(i))):
-            if i[j] != " ":
-                break
-            i[j] = None
-
-    matrix[0][0] = "."
-
-    s = ""
-
-    for i in matrix:
-        for j in i:
-            if j == None:
-                break
-            s += j
-        s += "\n"
-    return s
+    return f"({stringify(root[0])} {stringify(root[1])} {stringify(root[2])})"
 
 def calculate(symbols):
     s = deque()
@@ -133,12 +81,3 @@ def convert(symbols):
     while len(queue) > 0:
         result.append(queue.pop())
     return result
-
-
-symbols = input().split(' ')
-
-RPN = convert(symbols)
-
-root = calculate(RPN)
-
-print(stringify(root))
